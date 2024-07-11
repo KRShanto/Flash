@@ -60,7 +60,7 @@ export default function Page() {
           <Link
             href={tool.href}
             key={index}
-            className="h-[200px] w-[400px] rounded-lg shadow-md"
+            className="h-[200px] w-[400px] rounded-lg shadow-md transition hover:shadow-lg"
           >
             <Lottie animationData={tool.animation} className="h-[100px]" />
             <h3 className="text-center text-xl font-bold">{tool.title}</h3>
