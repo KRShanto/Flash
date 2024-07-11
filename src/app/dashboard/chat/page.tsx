@@ -2,7 +2,7 @@
 
 import Heading from "@/components/Heading";
 import { MessageSquare } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { formSchema } from "./constants";
 import * as z from "zod";
@@ -11,8 +11,20 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Bot } from "lucide-react";
+import axios from "axios";
+import { ClipLoader } from "react-spinners";
+import { cn } from "@/lib/utils";
+import UserAvatar from "./UserAvatar";
+import BotAvatar from "./BotAvatar";
+import { useUser } from "@clerk/nextjs";
 
 export default function ConversationPage() {
+  const { user } = useUser();
+
+  const [messages, setMessages] = useState<
+    { role: "user" | "assistant"; content: string }[]
+  >([]);
+
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       prompt: "",
@@ -23,7 +35,26 @@ export default function ConversationPage() {
   const isLoading = form.formState.isSubmitting;
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log(data);
+    try {
+      // add user message
+      setMessages((prev) => [...prev, { role: "user", content: data.prompt }]);
+
+      const response = await axios.post("/api/chat", {
+        prompt: data.prompt,
+      });
+
+      console.log(response.data);
+
+      // add assistant message
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: response.data },
+      ]);
+
+      form.reset();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -63,14 +94,43 @@ export default function ConversationPage() {
                 type="submit"
                 disabled={isLoading}
               >
-                <Bot className="mr-2 h-6 w-6 text-green-500" />
-                Generate
+                {isLoading ? (
+                  <ClipLoader color="#ffffff" loading={isLoading} size={20} />
+                ) : (
+                  <>
+                    <Bot className="mr-2 h-6 w-6 text-green-500" />
+                    Generate
+                  </>
+                )}
               </Button>
             </form>
           </Form>
         </div>
 
-        <div className="mt-4 space-y-4">Messages content</div>
+        {/* TODO: display something when messages are empty */}
+        <div className="mt-4 space-y-4">
+          <div className="flex flex-col-reverse gap-y-4">
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={cn(
+                  "flex w-full flex-col gap-2 rounded-lg p-4",
+                  message.role === "user"
+                    ? "border border-black/10 bg-white"
+                    : "bg-muted",
+                )}
+              >
+                <h3 className="flex items-center gap-2">
+                  {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
+                  <span className="text-lg font-semibold">
+                    {message.role === "user" ? user?.fullName : "Flash"}
+                  </span>
+                </h3>
+                {message.content}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
