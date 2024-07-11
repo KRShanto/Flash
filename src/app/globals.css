@@ -80,3 +80,7 @@ body,
     @apply bg-background text-foreground;
   }
 }
+
+pre > code {
+  background-color: transparent !important;
+}

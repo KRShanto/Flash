@@ -1,10 +1,10 @@
 "use client";
 
 import Heading from "@/components/Heading";
-import { MessageSquare } from "lucide-react";
+import { Code, MessageSquare } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { formSchema } from "../../../lib/constants";
+import { formSchema } from "@/lib/constants";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
@@ -14,10 +14,12 @@ import { Bot } from "lucide-react";
 import axios from "axios";
 import { ClipLoader } from "react-spinners";
 import { cn } from "@/lib/utils";
-import UserAvatar from "../../../components/UserAvatar";
-import BotAvatar from "../../../components/BotAvatar";
 import { useUser } from "@clerk/nextjs";
+import UserAvatar from "@/components/UserAvatar";
+import BotAvatar from "@/components/BotAvatar";
+import ReactMarkdown from "react-markdown";
 
+// TODO: reuse the chat and code components
 export default function ConversationPage() {
   const { user } = useUser();
 
@@ -39,11 +41,9 @@ export default function ConversationPage() {
       // add user message
       setMessages((prev) => [...prev, { role: "user", content: data.prompt }]);
 
-      const response = await axios.post("/api/chat", {
+      const response = await axios.post("/api/code", {
         prompt: data.prompt,
       });
-
-      console.log(response.data);
 
       // add assistant message
       setMessages((prev) => [
@@ -60,11 +60,11 @@ export default function ConversationPage() {
   return (
     <div>
       <Heading
-        title="Conversation"
-        description="Chat with the AI. Ask anything and get the answer"
-        icon={MessageSquare}
-        bgColor="bg-violet-500/10"
-        iconColor="text-violet-500"
+        title="Code Generation"
+        description="Generate code snippets for your projects."
+        icon={Code}
+        bgColor="bg-green-700/10"
+        iconColor="text-green-700"
       />
 
       <div className="px-4 lg:px-8">
@@ -82,7 +82,7 @@ export default function ConversationPage() {
                       <Input
                         className="border-0 text-base outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                         disabled={isLoading}
-                        placeholder="Ask me anything..."
+                        placeholder="Ask me any code you want to generate"
                         {...field}
                       />
                     </FormControl>
@@ -126,7 +126,21 @@ export default function ConversationPage() {
                     {message.role === "user" ? user?.fullName : "Flash"}
                   </span>
                 </h3>
-                {message.content}
+                <ReactMarkdown
+                  components={{
+                    code: ({ node, ...props }) => (
+                      <code {...props} className="rounded-lg bg-black/10 p-1" />
+                    ),
+                    pre: ({ node, ...props }) => (
+                      <div className="my-2 w-full overflow-auto rounded-lg bg-black/10 p-2">
+                        <pre {...props} />
+                      </div>
+                    ),
+                  }}
+                  className="overflow-hidden text-sm leading-7"
+                >
+                  {message.content}
+                </ReactMarkdown>
               </div>
             ))}
           </div>
