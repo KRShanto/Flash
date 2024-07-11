@@ -20,7 +20,7 @@ import BotAvatar from "@/components/BotAvatar";
 import ReactMarkdown from "react-markdown";
 
 // TODO: reuse the chat and code components
-export default function ConversationPage() {
+export default function CodePage() {
   const { user } = useUser();
 
   const [messages, setMessages] = useState<
@@ -126,6 +126,7 @@ export default function ConversationPage() {
                     {message.role === "user" ? user?.fullName : "Flash"}
                   </span>
                 </h3>
+                {/* TODO: syntax highlighing */}
                 <ReactMarkdown
                   components={{
                     code: ({ node, ...props }) => (
