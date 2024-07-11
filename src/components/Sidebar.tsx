@@ -34,7 +34,7 @@ const routes: Route[] = [
   {
     label: "Conversation",
     icon: MessageSquare,
-    href: "/dashboard/conversation",
+    href: "/dashboard/chat",
     color: "text-violet-500",
   },
   {
@@ -73,10 +73,10 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <div className="space-y-4 py-4 flex flex-col h-full text-white bg-gray-900">
-      <div className="px-3 py-2 flex-1">
-        <Link href="/dashboard" className="flex items-center pl-3 mb-14">
-          <div className="relative w-12 h-12 mr-4">
+    <div className="flex h-full flex-col space-y-4 bg-gray-900 py-4 text-white">
+      <div className="flex-1 px-3 py-2">
+        <Link href="/dashboard" className="mb-14 flex items-center pl-3">
+          <div className="relative mr-4 h-12 w-12">
             <Image fill alt="Logo" src="/logo.png" />
           </div>
           <h1 className="text-2xl font-bold" style={montserrat.style}>
@@ -90,14 +90,14 @@ export default function Sidebar() {
               href={route.href}
               key={route.href}
               className={cn(
-                "text-sm group flex p-3 w-full justify-start font-medium hover:text-white hover:bg-white/10 rounded-lg transition",
+                "group flex w-full justify-start rounded-lg p-3 text-sm font-medium transition hover:bg-white/10 hover:text-white",
                 route.href === pathname
                   ? "bg-white/10 text-white"
-                  : "text-zinc-400"
+                  : "text-zinc-400",
               )}
             >
-              <div className="flex items-center flex-1">
-                <route.icon className={cn("h-5 w-5 mr-3", route.color)} />
+              <div className="flex flex-1 items-center">
+                <route.icon className={cn("mr-3 h-5 w-5", route.color)} />
                 {route.label}
               </div>
             </Link>

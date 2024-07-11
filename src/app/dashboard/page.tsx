@@ -14,7 +14,7 @@ const tools = [
     title: "Chat with AI",
     description: "Chat with the AI. Ask anything and get the answer",
     animation: Conversation,
-    href: "/dashboard/conversation",
+    href: "/dashboard/chat",
   },
   {
     title: "Generate Code",
