@@ -4,7 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { Montserrat } from "next/font/google";
 import {
+  BarChart,
   Code,
+  Database,
   ImageIcon,
   LayoutDashboard,
   MessageSquare,
@@ -60,6 +62,18 @@ const routes: Route[] = [
     icon: Code,
     href: "/dashboard/code",
     color: "text-green-500",
+  },
+  {
+    label: "Storage",
+    icon: Database,
+    href: "/dashboard/storage",
+    color: "text-red-500",
+  },
+  {
+    label: "Usage",
+    icon: BarChart,
+    href: "/dashboard/usage",
+    color: "text-cyan-500",
   },
   {
     label: "Settings",
