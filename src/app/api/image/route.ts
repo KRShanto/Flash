@@ -1,3 +1,4 @@
+import { checkApiLimit, increaseApiCount } from "@/lib/api-limit";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { OpenAI } from "openai";
@@ -19,6 +20,15 @@ export async function POST(req: Request) {
     if (!prompt) {
       return new NextResponse("Prompt is required", { status: 400 });
     }
+
+    const freeTrail = await checkApiLimit("Image");
+
+    if (!freeTrail) {
+      return new NextResponse("You have exceeded the free limit", {
+        status: 403,
+      });
+    }
+
     const urls: string[] = [];
     const promises: Promise<void>[] = [];
 
@@ -38,6 +48,8 @@ export async function POST(req: Request) {
     }
 
     await Promise.all(promises);
+
+    await increaseApiCount("Image");
 
     return NextResponse.json(urls);
   } catch (error) {

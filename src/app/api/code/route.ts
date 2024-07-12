@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { OpenAI } from "openai";
+import { checkApiLimit, increaseApiCount } from "@/lib/api-limit";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -18,6 +19,14 @@ export async function POST(req: Request) {
       return new NextResponse("Prompt is required", { status: 400 });
     }
 
+    const freeTrail = await checkApiLimit("Code");
+
+    if (!freeTrail) {
+      return new NextResponse("You have reached the limit of free code API", {
+        status: 403,
+      });
+    }
+
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
@@ -32,6 +41,8 @@ export async function POST(req: Request) {
         },
       ],
     });
+
+    await increaseApiCount("Code");
 
     return NextResponse.json(response.choices[0].message.content);
   } catch (error) {
