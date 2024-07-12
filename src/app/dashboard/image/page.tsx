@@ -76,7 +76,7 @@ export default function ImagePage() {
                       <Input
                         className="border-0 text-base outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                         disabled={isLoading}
-                        placeholder="Ask me any code you want to generate"
+                        placeholder="Ask me any image you want to generate"
                         {...field}
                       />
                     </FormControl>
