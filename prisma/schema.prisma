@@ -1,0 +1,23 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model UserApiLimit {
+  id        Int      @id @default(autoincrement())
+  userId    String   @unique
+  count     Int      @default(0)
+  type      ApiType
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+enum ApiType {
+  Video
+  Music
+  Image
+}
