@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
 import React from "react";
+import NextTopLoader from "nextjs-toploader";
 
 export default function DashboardLayout({
   children,
@@ -8,13 +9,14 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="h-full relative">
-      <div className="hidden h-full md:flex md:w-72 flex-col md:fixed md:inset-y-0 z-[80] ">
+    <div className="relative h-full">
+      <div className="z-[80] hidden h-full flex-col md:fixed md:inset-y-0 md:flex md:w-72">
         <Sidebar />
       </div>
 
       <main className="md:pl-72">
         <Navbar />
+        <NextTopLoader showSpinner={false} />
         {children}
       </main>
     </div>
